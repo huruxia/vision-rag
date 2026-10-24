@@ -1,4 +1,8 @@
-from vision_rag.llm import chat
+import sys
+from pathlib import Path
 
-if __name__ == "__main__":
-    print(chat("用一句话解释什么是 RAG"))
+sys.path.insert(0, str(Path(__file__).parent / "src"))
+
+from vision_rag.chat_cli import run
+
+run()

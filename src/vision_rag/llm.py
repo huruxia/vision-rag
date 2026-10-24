@@ -8,7 +8,7 @@ client = OpenAI(
 
 def chat(prompt: str) -> str:
     resp = client.chat.completions.create(
-        model="deepseek-chat",
+        model="deepseek-flash",
         messages=[{"role": "user", "content": prompt}],
     )
     return resp.choices[0].message.content
