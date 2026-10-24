@@ -78,3 +78,4 @@ Python · uv · DeepSeek(deepseek-flash) · 通义(text-embedding-v3) · openai 
 
 - [DEBT.md](DEBT.md)：欠债清单（每周更新，面试素材）
 - experiments/：实验记录（如 temperature_20261024.md）
+- 掘金博客：W1 复盘《从零搭出能回答"自己文档"的 RAG：179 行代码，成本不到 1 毛》<https://juejin.cn/post/7699732988154544143>
