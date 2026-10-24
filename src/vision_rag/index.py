@@ -1,0 +1,28 @@
+import json
+from pathlib import Path
+from .embed import embed
+
+DOCS = [
+    "检索增强生成（RAG）是一种让大模型基于资料回答问题的技术。大模型的知识停留在训练时点，遇到新资料会不知道或瞎编。RAG 的做法是：先把资料切块并转成向量存起来，用户提问时，系统把问题也转成向量，找出最相关的几个片段，再把这些片段和问题一起交给大模型，让它基于片段作答。这样答案有依据，还能标注出处。RAG 的关键指标是召回率（相关片段有没有被找到）和忠实度（答案有没有忠于片段）。",
+    "嵌入（Embedding）是把文字变成一串数字（向量）的方法。比如把一句话变成 1024 个数字，这串数字就代表这句话在语义空间里的位置。意思相近的句子，它们的向量方向也接近。计算机不懂文字，但会算数，把文字变成向量后就能用数学算相似度。最常用的是余弦相似度：两个向量夹角的余弦值，越接近 1 表示越像。嵌入模型需要专门训练，同一个模型产出的向量才能互相比较。",
+    "智能体（Agent）是能自主完成多步任务的程序。它和大模型单次对话不同，大模型只是“说”，Agent 会“做”：规划步骤、调用工具、观察结果、再决定下一步，直到完成目标。一个简单的 Agent 循环是：模型思考下一步，调用工具（比如查数据库、访问网页），看到结果，继续思考，如此循环。判断是否需要用 Agent，看任务是否多步、是否需要外部信息。成本比单次调用高，能一句话解决的就不必上 Agent。",
+    "为什么要分块？大模型和向量检索都有长度限制，整篇文档直接转一个向量，细节会糊成一团。所以要把长文档切成小段（Chunk），每段单独转向量。切块大小有讲究：太短，语义不完整；太长，细节被平均掉。常见做法是固定字数切块，比如每 200 字一块；更高级的做法是按标题、段落等结构切。切完的每一块就像书签，检索时找到最相关的几块，再把它们拼起来喂给大模型。分块策略直接决定检索质量，是 RAG 系统里最值得实验的部分。",
+]
+
+def chunk_text(text: str, size: int = 200) -> list[str]:
+    return [text[i : i + size] for i in range(0, len(text), size)]
+
+def build_index() -> None:
+    out = []
+    for doc_id, doc in enumerate(DOCS):
+        for i, chunk in enumerate(chunk_text(doc)):
+            print(f"正在嵌入 文档{doc_id} 第{i}块（{len(chunk)}字）...")
+            vec = embed(chunk)
+            out.append({"doc_id": doc_id, "chunk_id": i, "text": chunk, "vector": vec})
+    Path("data/index").mkdir(parents=True, exist_ok=True)
+    with open("data/index/v0.json", "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False)
+    print(f"索引完成：{len(out)} 个分块 → data/index/v0.json")
+
+if __name__ == "__main__":
+    build_index()
