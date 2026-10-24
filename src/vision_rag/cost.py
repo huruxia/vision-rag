@@ -10,9 +10,14 @@ PRICE = {
 
 def calc_cost(usage, model: str = "deepseek-flash") -> float:
     p = PRICE[model]
-    # 简化版：假设全部未命中（保守估算）
+    hit = getattr(usage, "prompt_cache_hit_tokens", 0)
+    miss = getattr(usage, "prompt_cache_miss_tokens", 0)
+    if hit + miss == 0:                      # 老接口没有缓存字段时，退回全未命中
+        miss = usage.prompt_tokens
     cost = (
-        usage.prompt_tokens / 1_000_000 * p["input_miss"]
+        hit / 1_000_000 * p["input_hit"]
+        + miss / 1_000_000 * p["input_miss"]
         + usage.completion_tokens / 1_000_000 * p["output"]
     )
     return cost
+
