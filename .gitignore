@@ -30,3 +30,6 @@ models/
 # 系统
 .DS_Store
 Thumbs.db
+
+# 例外：.env.example 是模板，需要进 git
+!.env.example

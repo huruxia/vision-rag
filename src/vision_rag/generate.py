@@ -10,4 +10,4 @@ def answer(question: str) -> str:
 {context}
 
 问题：{question}"""
-    return chat(prompt,temperature=0.5)
+    return chat(prompt, temperature=0.5)
