@@ -12,9 +12,10 @@ def run() -> None:
         context = "\n\n".join(r["text"] for _, r in results)
         a = answer(q)
         print(f"回答: {a}")
-        verdict = judge(context, a)
+        verdict = judge(context, a).strip().lstrip("*# \t")
         print(f"裁判: {verdict}")
         faithful += verdict.startswith("忠实")
+
     n = len(EVAL)
     print(f"\n忠实率: {faithful}/{n} = {faithful / n:.2f}")
 
