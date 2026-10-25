@@ -1,4 +1,5 @@
-from .retrieve import retrieve
+from .hybrid import search as retrieve
+
 
 EVAL = [
     {"q": "什么是RAG", "doc_id": 0},
